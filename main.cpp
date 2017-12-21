@@ -1,6 +1,14 @@
-#include <iostream>
+//
+// Created by Florian Blot on 09/12/2017.
+//
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+#include <iostream>
+#include "Commandes.h"
+
+
+int main (int argc, char *argv[]) {
+    printf("\n\t - - - Puissance 4 - - -\n");
+    Commandes::menu();
     return 0;
+
 }
