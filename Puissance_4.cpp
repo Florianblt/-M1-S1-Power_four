@@ -157,8 +157,10 @@ int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, in
             if (colonnesCoups[i] <= 6) {
                 if (grille[i][colonnesCoups[i]] == 0) {
                     grille[i][colonnesCoups[i]] = joueur;
+                    totalCoups ++;
                     score = -negamax(grille,prochainMeilleurCoup,profondeur - 1, -beta, -alpha, joueurAdverse);
                     grille[i][colonnesCoups[i]] = 0;
+                    totalCoups --;
                     if (score > meilleurScore) {
                         meilleurScore = score;
                         meilleurCoup = i;
@@ -186,9 +188,9 @@ int Puissance_4::tourIA(int grille[7][6], int profondeur, int joueur) {
 
 int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
     if (gameResult(grille) == joueur)
-        return std::numeric_limits<int>::max();
+        return 10000 - totalCoups;
     else if (gameResult(grille) == joueurAdverse)
-        return - std::numeric_limits<int>::max();
+        return -10000 + totalCoups;
     else
         return 0;
 }
