@@ -7,6 +7,9 @@
 
 
 #include <string>
+#include <iostream>
+#include <sstream>
+#include <zconf.h>
 #include "Puissance_4.h"
 
 class Commandes {
@@ -14,6 +17,8 @@ class Commandes {
 public:
     static std::string getInputText ();
     static void printGameState (Puissance_4 *game);
+    static void menu();
+    static void jouerPartie(int modeDeJeu);
 
 };
 

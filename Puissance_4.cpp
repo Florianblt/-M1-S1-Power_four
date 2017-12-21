@@ -1,16 +1,17 @@
-#ifndef Puissance_44
-#define Puissance_44
+//
+// Created by Florian Blot on 09/12/2017.
+//
+
 #include "Puissance_4.h"
-#endif
 
 Puissance_4::Puissance_4 (int nombreJoueurs) {
     this->nombreJoueurs = nombreJoueurs;
     this->reset();
 }
 
-
 void Puissance_4::reset () {
 
+    this->totalCoups = 0;
     this->joueurActuel = 1;
     this->partieTermine = false;
 
@@ -22,21 +23,17 @@ void Puissance_4::reset () {
 
 }
 
-
 int Puissance_4::getEtatCase(int col, int row){
     return this->grille[col][row];
 }
-
 
 int Puissance_4::getJoueurActuel() {
     return this->joueurActuel;
 }
 
-
 bool Puissance_4::getPartieTermine(){
     return this->partieTermine;
 }
-
 
 int Puissance_4::getVainqueur(){
 
@@ -44,9 +41,8 @@ int Puissance_4::getVainqueur(){
         return 0; // Game isn't over yet (TODO: Throw)
     }
 
-    return this->joueurActuel;
+    return gameResult(grille);
 }
-
 
 void Puissance_4::jouerCoup (int joueur, int col) {
 
@@ -75,73 +71,188 @@ void Puissance_4::jouerCoup (int joueur, int col) {
     }
 
     this->grille[col][*row] = joueur;
+    totalCoups ++;
+    int hasWon = gameResult(grille);
 
-    bool hasWon = this->testVictoire(joueur, col, *row);
-
-    if (hasWon) {
-
+    if (hasWon > 0) {
         this->partieTermine = true;
         return;
-
     }
 
     (*row)++;
     this->joueurActuel++;
 
-    if (this->joueurActuel > joueurActuel) {
+    if (this->joueurActuel > nombreJoueurs) {
         this->joueurActuel = 1;
     }
+}
 
-    return;
+void Puissance_4::ia_jouerCoup(int difficulte, int joueur){
+    int col;
+    switch (difficulte){
+        case 1 :
+            col = rand() % 7;
+            while(colonnesCoups[col] >= 6) {
+                col = rand() % 7;
+            }
+            this->grille[col][colonnesCoups[col]] = joueur;
+            if(gameResult(grille) > 0) {
+                this->partieTermine = true;
+                break;
+            }
+            colonnesCoups[col] ++;
+            this->joueurActuel ++;
+            if (this->joueurActuel > nombreJoueurs) {
+                this->joueurActuel = 1;
+            }
+            break;
+        case 2:
+            col = tourIA(grille,4,2);
+            this->grille[col][colonnesCoups[col]] = joueur;
+            if(gameResult(grille) > 0) {
+                this->partieTermine = true;
+                break;
+            }
+            colonnesCoups[col] ++;
+            this->joueurActuel ++;
+            if (this->joueurActuel > nombreJoueurs) {
+                this->joueurActuel = 1;
+            }
+            break;
+        case 3:
+            col = tourIA(grille,7,2);
+            this->grille[col][colonnesCoups[col]] = joueur;
+            if(gameResult(grille) > 0) {
+                this->partieTermine = true;
+                break;
+            }
+            colonnesCoups[col] ++;
+            this->joueurActuel ++;
+            if (this->joueurActuel > nombreJoueurs) {
+                this->joueurActuel = 1;
+            }
+            break;
+        default:
+            break;
+    }
 
 }
 
+int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, int alpha, int beta, int joueur){
+    int meilleurScore = - std::numeric_limits<int>::max();
+    int joueurAdverse;
+    if(joueur == 1)
+        joueurAdverse = 2;
+    else
+        joueurAdverse = 1;
+    if(gameResult(grille) != 0 || profondeur == 0)
+        meilleurScore = eval(grille, joueur, joueurAdverse);
+    else {
+        int score;
+        int prochainMeilleurCoup;
+        std::array<int, 7> columns = {3, 4, 5, 0, 1, 2, 6};
+        std::random_shuffle(columns.begin(), columns.end());
 
-bool Puissance_4::testDirection(int joueur, int col, int row, int colIncr, int rowIncr) {
-
-    if ((col + (3 * colIncr)) < 0 || (row + (3 * rowIncr)) < 0) { // Check bounds
-        return false;
-    }
-
-    int colPos = col;
-    int rowPos = row;
-
-    for (int i = 0; i < 4; i++) {
-
-        if (this->grille[colPos][rowPos] != joueur) {
-            return false;
-        } else {
-
-            colPos = colPos + colIncr;
-            rowPos = rowPos + rowIncr;
-
-        }
-
-    }
-
-    return true;
-
-}
-
-
-bool Puissance_4::testVictoire(int player, int col, int row) {
-
-    for (int colIncr = -1; colIncr <= 1; colIncr++) {
-        for (int rowIncr = -1; rowIncr <= 1; rowIncr++) {
-
-            if (!(colIncr == 0 && rowIncr == 0)) {
-
-                bool hasWon = this->testDirection(player, col, row, colIncr, rowIncr);
-
-                if (hasWon) {
-                    return true;
+        for (int i : columns) {
+            if (colonnesCoups[i] <= 6) {
+                if (grille[i][colonnesCoups[i]] == 0) {
+                    grille[i][colonnesCoups[i]] = joueur;
+                    score = -negamax(grille,prochainMeilleurCoup,profondeur - 1, -beta, -alpha, joueurAdverse);
+                    grille[i][colonnesCoups[i]] = 0;
+                    if (score > meilleurScore) {
+                        meilleurScore = score;
+                        meilleurCoup = i;
+                    }
+                    if(score > alpha){
+                        alpha = meilleurScore;
+                        meilleurCoup = i;
+                        if(alpha > beta){
+                            break;
+                        }
+                    }
                 }
+            }
+        }
+    }
+    return meilleurScore;
+}
 
+int Puissance_4::tourIA(int grille[7][6], int profondeur, int joueur) {
+    meilleurCoup = 3;
+    int score = negamax(grille,meilleurCoup, profondeur, - std::numeric_limits<int>::max() , std::numeric_limits<int>::max(), joueur);
+    std::cout << meilleurCoup << "\n";
+    return meilleurCoup;
+}
+
+int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
+    if (gameResult(grille) == joueur)
+        return std::numeric_limits<int>::max();
+    else if (gameResult(grille) == joueurAdverse)
+        return - std::numeric_limits<int>::max();
+    else
+        return 0;
+}
+
+int Puissance_4::gameResult(int grille[7][6]){
+    int joueur1 = 0, joueur2 = 0;
+    for (int i = 0; i<7; i++) {
+        for (int j = 0; j < 6; j++) {
+            if (grille[i][j] == 0) continue;
+
+            //Horizontale
+            if (j <= 3) {
+                for (int k = 0; k < 4; ++k) {
+                    if (grille[i][j + k] == 1) joueur1++;
+                    else if (grille[i][j + k] == 2) joueur2++;
+                    else break;
+                }
+                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
+                joueur1 = 0;
+                joueur2 = 0;
+            }
+            //Verticale
+            if (i >= 3) {
+                for (int k = 0; k < 4; ++k) {
+                    if (grille[i - k][j] == 1) joueur1++;
+                    else if (grille[i - k][j] == 2) joueur2++;
+                    else break;
+                }
+                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
+                joueur1 = 0;
+                joueur2 = 0;
             }
 
+            //Diagonale droite
+            if (j <= 3 && i >= 3) {
+                for (int k = 0; k < 4; ++k) {
+                    if (grille[i - k][j + k] == 1) joueur1++;
+                    else if (grille[i - k][j + k] == 2) joueur2++;
+                    else break;
+                }
+                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
+                joueur1 = 0;
+                joueur2 = 0;
+            }
+
+            //Diagonale gauche
+            if (j >= 3 && i >= 3) {
+                for (int k = 0; k < 4; ++k) {
+                    if (grille[i - k][j - k] == 1) joueur1++;
+                    else if (grille[i - k][j - k] == 2) joueur2++;
+                    else break;
+                }
+                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
+                joueur1 = 0;
+                joueur2 = 0;
+            }
         }
     }
-
-    return false;
-
+    for (int i = 0; i<7; i++) {
+        for (int j = 0; j < 6; j++) {
+            //Game has not ended yet
+            if (grille[i][j] == 0)return 0;
+        }
+    }
+    //Game draw!
+    return 3;
 }
