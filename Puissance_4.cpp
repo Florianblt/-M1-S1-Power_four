@@ -201,8 +201,8 @@ int Puissance_4::gameResult(int grille[7][6]){
         for (int j = 0; j < 6; j++) {
             if (grille[i][j] == 0) continue;
 
-            //Horizontale
-            if (j <= 3) {
+            //Verticale
+            if (j < 3) {
                 for (int k = 0; k < 4; ++k) {
                     if (grille[i][j + k] == 1) joueur1++;
                     else if (grille[i][j + k] == 2) joueur2++;
@@ -212,7 +212,7 @@ int Puissance_4::gameResult(int grille[7][6]){
                 joueur1 = 0;
                 joueur2 = 0;
             }
-            //Verticale
+            //Horizontal
             if (i >= 3) {
                 for (int k = 0; k < 4; ++k) {
                     if (grille[i - k][j] == 1) joueur1++;
@@ -224,8 +224,8 @@ int Puissance_4::gameResult(int grille[7][6]){
                 joueur2 = 0;
             }
 
-            //Diagonale droite
-            if (j <= 3 && i >= 3) {
+            //Diagonale gauche haut
+            if (j < 3 && i >= 3) {
                 for (int k = 0; k < 4; ++k) {
                     if (grille[i - k][j + k] == 1) joueur1++;
                     else if (grille[i - k][j + k] == 2) joueur2++;
@@ -236,7 +236,7 @@ int Puissance_4::gameResult(int grille[7][6]){
                 joueur2 = 0;
             }
 
-            //Diagonale gauche
+            //Diagonale gauche bas
             if (j >= 3 && i >= 3) {
                 for (int k = 0; k < 4; ++k) {
                     if (grille[i - k][j - k] == 1) joueur1++;
