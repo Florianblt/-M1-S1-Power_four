@@ -196,56 +196,77 @@ int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
 }
 
 int Puissance_4::gameResult(int grille[7][6]){
-    int joueur1 = 0, joueur2 = 0;
-    for (int i = 0; i<7; i++) {
+    int joueur1 = 0, joueur2 = 0, cpt = 0, tmp = 0;
+    for (int i = 0; i < 7; i++) {
         for (int j = 0; j < 6; j++) {
             if (grille[i][j] == 0) continue;
 
-            //Horizontale
-            if (j <= 3) {
-                for (int k = 0; k < 4; ++k) {
-                    if (grille[i][j + k] == 1) joueur1++;
-                    else if (grille[i][j + k] == 2) joueur2++;
-                    else break;
+            //verif colonne
+            if(j<3){
+                if(grille[i][j] != 0){
+                    tmp = grille[i][j];
+                    ++cpt;
+                    while(grille[i][j + cpt] == tmp && cpt<4){
+                        ++cpt;
+                    }
+                    if(cpt == 4){
+                        return tmp;
+                    }
+                    else{
+                        cpt = 0;
+                    }
                 }
-                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
-                joueur1 = 0;
-                joueur2 = 0;
-            }
-            //Verticale
-            if (i >= 3) {
-                for (int k = 0; k < 4; ++k) {
-                    if (grille[i - k][j] == 1) joueur1++;
-                    else if (grille[i - k][j] == 2) joueur2++;
-                    else break;
-                }
-                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
-                joueur1 = 0;
-                joueur2 = 0;
             }
 
-            //Diagonale droite
-            if (j <= 3 && i >= 3) {
-                for (int k = 0; k < 4; ++k) {
-                    if (grille[i - k][j + k] == 1) joueur1++;
-                    else if (grille[i - k][j + k] == 2) joueur2++;
-                    else break;
+            //verif ligne
+            if(i<4){
+                if(grille[i][j] != 0){
+                    tmp = grille[i][j];
+                    ++cpt;
+                    while(grille[i + cpt][j] == tmp && cpt<4){
+                        ++cpt;
+                    }
+                    if(cpt == 4){
+                        return tmp;
+                    }
+                    else{
+                        cpt = 0;
+                    }
                 }
-                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
-                joueur1 = 0;
-                joueur2 = 0;
             }
 
-            //Diagonale gauche
-            if (j >= 3 && i >= 3) {
-                for (int k = 0; k < 4; ++k) {
-                    if (grille[i - k][j - k] == 1) joueur1++;
-                    else if (grille[i - k][j - k] == 2) joueur2++;
-                    else break;
+            //verif diagonale vers haut droite
+            if(j<3 && i<4){
+                if(grille[i][j] != 0){
+                    tmp = grille[i][j];
+                    ++cpt;
+                    while(grille[i + cpt][j + cpt] == tmp && cpt<4){
+                        ++cpt;
+                    }
+                    if(cpt == 4){
+                        return tmp;
+                    }
+                    else{
+                        cpt = 0;
+                    }
                 }
-                if (joueur1 == 4)return 1; else if (joueur2 == 4)return 2;
-                joueur1 = 0;
-                joueur2 = 0;
+            }
+
+            //verif diagonale vers haut gauche
+            if(j<3 && i>2){
+                if(grille[i][j] != 0){
+                    tmp = grille[i][j];
+                    ++cpt;
+                    while(grille[i - cpt][j + cpt] == tmp && cpt<4){
+                        ++cpt;
+                    }
+                    if(cpt == 4){
+                        return tmp;
+                    }
+                    else{
+                        cpt = 0;
+                    }
+                }
             }
         }
     }
