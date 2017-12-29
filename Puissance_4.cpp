@@ -120,7 +120,7 @@ void Puissance_4::ia_jouerCoup(int difficulte, int joueur){
             }
             break;
         case 3:
-            col = tourIA(grille,7,2);
+            col = tourIA(grille,8,2);
             this->grille[col][colonnesCoups[col]] = joueur;
             if(gameResult(grille) > 0) {
                 this->partieTermine = true;
@@ -153,12 +153,15 @@ int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, in
         std::array<int, 7> columns = {3, 4, 5, 0, 1, 2, 6};
         std::random_shuffle(columns.begin(), columns.end());
 
+
         for (int i : columns) {
             if (colonnesCoups[i] <= 6) {
                 if (grille[i][colonnesCoups[i]] == 0) {
                     grille[i][colonnesCoups[i]] = joueur;
+                    colonnesCoups[i]++;
                     totalCoups ++;
                     score = -negamax(grille,prochainMeilleurCoup,profondeur - 1, -beta, -alpha, joueurAdverse);
+                    colonnesCoups[i]--;
                     grille[i][colonnesCoups[i]] = 0;
                     totalCoups --;
                     if (score > meilleurScore) {
