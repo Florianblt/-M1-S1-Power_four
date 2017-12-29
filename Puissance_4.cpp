@@ -191,12 +191,235 @@ int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
         return 10000 - totalCoups;
     else if (gameResult(grille) == joueurAdverse)
         return -10000 + totalCoups;
-    else
-        return 0;
+    else{
+        //On compte évalue la valeur de la grille actuelle
+        int score = 0, cpt = 0, joueurAdverse;
+        if(joueur == 1)
+            joueurAdverse = 2;
+        else
+            joueurAdverse = 1;
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 6; j++) {
+                if (grille[i][j] == 0) continue;
+                //Colonnes
+                if(j<3){
+                    if(grille[i][j] == joueur){
+                        ++cpt;
+                        while(grille[i][j + cpt] == joueur){
+                            ++cpt;
+                        }
+                        if(grille[i][j + cpt + 1] != joueurAdverse) {
+                            if (cpt == 3) {
+                                score += 1000;
+                            } else if (cpt == 2) {
+                                score += 100;
+                            } else {
+                                score += 10;
+                            }
+                        }
+                        cpt = 0;
+                    }else if(grille[i][j] == joueurAdverse){
+                        ++cpt;
+                        while(grille[i][j + cpt] == joueurAdverse){
+                            ++cpt;
+                        }
+                        if(grille[i][j + cpt + 1] != joueur) {
+                            if (cpt == 3) {
+                                score -= 1000;
+                            } else if (cpt == 2) {
+                                score -= 100;
+                            } else {
+                                score -= 10;
+                            }
+                        }
+                        cpt = 0;
+                    }
+                }
+                //Lignes
+                if(i<4){
+                    if(grille[i][j] == joueur){
+                        ++cpt;
+                        while(grille[i + cpt][j] == joueur){
+                            ++cpt;
+                        }
+                        if(i != 0) {
+                            if (grille[i + cpt + 1][j] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }else{
+                            if (grille[i + cpt + 1][j] != joueurAdverse || grille[i-1][j] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }else if(grille[i][j] == joueurAdverse){
+                        ++cpt;
+                        while(grille[i + cpt][j] == joueurAdverse){
+                            ++cpt;
+                        }
+                        if(i != 0) {
+                            if (grille[i + cpt + 1][j] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }else{
+                            if (grille[i + cpt + 1][j] != joueur || grille[i-1][j] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }
+                }
+                //verif diagonale vers haut droite
+                if(j<3 && i<4){
+                    if(grille[i][j] == joueur){
+                        ++cpt;
+                        while(grille[i + cpt][j + cpt] == joueur){
+                            ++cpt;
+                        }
+                        if(i != 0 && j!=0){
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueurAdverse || grille[i-1][j-1] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }else{
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }
+                    else if(grille[i][j] == joueurAdverse){
+                        ++cpt;
+                        while(grille[i + cpt][j + cpt] == joueurAdverse){
+                            ++cpt;
+                        }
+                        if(i != 0 && j!=0){
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueur || grille[i-1][j-1] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }else{
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }
+                }
+
+                //verif diagonale vers haut gauche
+                if(j<3 && i>2){
+                    if(grille[i][j] == joueur){
+                        ++cpt;
+                        while(grille[i - cpt][j + cpt] == joueur){
+                            ++cpt;
+                        }
+                        if(i != 6 && j!=0){
+                            if(grille[i - cpt - 1][j + cpt + 1] != joueurAdverse || grille[i+1][j-1] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }else{
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueurAdverse) {
+                                if (cpt == 3) {
+                                    score += 1000;
+                                } else if (cpt == 2) {
+                                    score += 100;
+                                } else {
+                                    score += 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }else if(grille[i][j] == joueurAdverse){
+                        ++cpt;
+                        while(grille[i - cpt][j + cpt] == joueurAdverse){
+                            ++cpt;
+                        }
+                        if(i != 6 && j!=0){
+                            if(grille[i - cpt - 1][j + cpt + 1] != joueur || grille[i+1][j-1] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }else{
+                            if(grille[i + cpt + 1][j + cpt + 1] != joueur) {
+                                if (cpt == 3) {
+                                    score -= 1000;
+                                } else if (cpt == 2) {
+                                    score -= 100;
+                                } else {
+                                    score -= 10;
+                                }
+                            }
+                        }
+                        cpt = 0;
+                    }
+                }
+            }
+        }
+        return score;
+
+    }
 }
 
 int Puissance_4::gameResult(int grille[7][6]){
-    int joueur1 = 0, joueur2 = 0, cpt = 0, tmp = 0;
+    int cpt = 0, tmp = 0;
     for (int i = 0; i < 7; i++) {
         for (int j = 0; j < 6; j++) {
             if (grille[i][j] == 0) continue;
@@ -272,10 +495,8 @@ int Puissance_4::gameResult(int grille[7][6]){
     }
     for (int i = 0; i<7; i++) {
         for (int j = 0; j < 6; j++) {
-            //Game has not ended yet
             if (grille[i][j] == 0)return 0;
         }
     }
-    //Game draw!
     return 3;
 }

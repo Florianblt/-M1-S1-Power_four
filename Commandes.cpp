@@ -15,7 +15,6 @@ std::string Commandes::getInputText () {
 }
 
 void Commandes::printGameState (Puissance_4 *game) {
-
     std::cout<<"\n-----------------\n";
 
     for (int row = 5; row >= 0; row--) {
@@ -30,10 +29,10 @@ void Commandes::printGameState (Puissance_4 *game) {
             if (player == 0) {
                 boardChar = " ";
             } else {
-
-                std::stringstream ss;
-                ss << player;
-                boardChar = ss.str();
+                if(player == 1)
+                    boardChar = "X";
+                else
+                    boardChar = "O";
 
             }
 
@@ -113,7 +112,7 @@ void Commandes::jouerPartie(int modeDeJeu){
             while (!game.getPartieTermine()) {
                 Commandes::printGameState(&game);
                 int joueurActuel = game.getJoueurActuel();
-                std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7) "<< game.totalCoups <<"\n";
+                std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7)\n";
                 std::string input = Commandes::getInputText();
                 int col = atoi(input.c_str());
                 game.jouerCoup(joueurActuel, col);
@@ -124,7 +123,7 @@ void Commandes::jouerPartie(int modeDeJeu){
                 Commandes::printGameState(&game);
                 int joueurActuel = game.getJoueurActuel();
                 if(joueurActuel == 1) {
-                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7) "<< game.totalCoups <<"\n";
+                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7)\n";
                     std::string input = Commandes::getInputText();
                     int col = atoi(input.c_str());
                     game.jouerCoup(joueurActuel, col);
@@ -141,7 +140,7 @@ void Commandes::jouerPartie(int modeDeJeu){
                 Commandes::printGameState(&game);
                 int joueurActuel = game.getJoueurActuel();
                 if(joueurActuel == 1) {
-                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7) "<< game.totalCoups <<"\n";
+                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7)\n";
                     std::string input = Commandes::getInputText();
                     int col = atoi(input.c_str());
                     game.jouerCoup(joueurActuel, col);
@@ -157,7 +156,7 @@ void Commandes::jouerPartie(int modeDeJeu){
                 Commandes::printGameState(&game);
                 int joueurActuel = game.getJoueurActuel();
                 if(joueurActuel == 1) {
-                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7) "<< game.totalCoups <<"\n";
+                    std::cout<<"Joueur "<<joueurActuel<<" entrez un numero de colonne (Entre 1 et 7)\n";
                     std::string input = Commandes::getInputText();
                     int col = atoi(input.c_str());
                     game.jouerCoup(joueurActuel, col);
@@ -173,11 +172,9 @@ void Commandes::jouerPartie(int modeDeJeu){
                 Commandes::printGameState(&game);
                 int joueurActuel = game.getJoueurActuel();
                 if(joueurActuel == 1) {
-                    sleep(1);
                     std::cout<<"L'ordinateur 1 joue ...\n";
                     game.ia_jouerCoup(3,1);
                 }else{
-                    sleep(1);
                     std::cout<<"L'ordinateur 2 joue ...\n";
                     game.ia_jouerCoup(3,2);
                 }
