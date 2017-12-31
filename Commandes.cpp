@@ -1,7 +1,3 @@
-//
-// Created by Florian Blot on 09/12/2017.
-//
-
 #include "Commandes.h"
 
 std::string Commandes::getInputText () {
@@ -14,6 +10,10 @@ std::string Commandes::getInputText () {
 
 }
 
+/**
+ * Affiche l'etat de la partie
+ * @param game
+ */
 void Commandes::printGameState (Puissance_4 *game) {
     std::cout<<"\n-----------------\n";
 
@@ -48,6 +48,9 @@ void Commandes::printGameState (Puissance_4 *game) {
 
 }
 
+/**
+ * Menu du jeu, tourne en boucle jusqu'à ce que le joueur quitte
+ */
 void Commandes::menu(){
     bool exit = false;
     while(!exit) {
@@ -93,7 +96,8 @@ void Commandes::menu(){
             case 4 :
                 jouerPartie(4);
                 break;
-            case 5 :jouerPartie(5);
+            case 5 :
+                jouerPartie(5);
                 break;
             case 6 :
                 exit = true;
@@ -105,6 +109,10 @@ void Commandes::menu(){
     }
 }
 
+/**
+ * Permet de joue une partie en fonction du mode séléctionné dans le menu
+ * @param modeDeJeu
+ */
 void Commandes::jouerPartie(int modeDeJeu){
     Puissance_4 game(2);
     switch (modeDeJeu){

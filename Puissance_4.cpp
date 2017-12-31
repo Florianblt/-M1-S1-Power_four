@@ -1,14 +1,17 @@
-//
-// Created by Florian Blot on 09/12/2017.
-//
-
 #include "Puissance_4.h"
 
+/**
+ * Constructeur
+ * @param nombreJoueurs nombre de joueurs pendant la partie (Toujours égal à deux)
+ */
 Puissance_4::Puissance_4 (int nombreJoueurs) {
     this->nombreJoueurs = nombreJoueurs;
     this->reset();
 }
 
+/**
+ * Permet de redémarrer une partie
+ */
 void Puissance_4::reset () {
 
     this->totalCoups = 0;
@@ -23,18 +26,36 @@ void Puissance_4::reset () {
 
 }
 
+/**
+ * Renvoie le coup qui a été joué dans la case (O, 1 ou 2)
+ * @param col : Indice de la colonne
+ * @param row : Indice de la case
+ * @return int : Coup
+ */
 int Puissance_4::getEtatCase(int col, int row){
     return this->grille[col][row];
 }
 
+/**
+ * Retourne le numéro du joueur qui joue actuellement son tour
+ * @return int joueur actuel
+ */
 int Puissance_4::getJoueurActuel() {
     return this->joueurActuel;
 }
 
+/**
+ * Retourne true si la partie est terminée, sinon false;
+ * @return
+ */
 bool Puissance_4::getPartieTermine(){
     return this->partieTermine;
 }
 
+/**
+ * Retourne le vainqueur de la partie (0 si la partie n'est pas terminée, 3 si c'est un match nul, le numéro du joueur s'il y a un vainqueur)
+ * @return int partie terminée
+ */
 int Puissance_4::getVainqueur(){
 
     if (!this->partieTermine) {
@@ -44,6 +65,11 @@ int Puissance_4::getVainqueur(){
     return gameResult(grille);
 }
 
+/**
+ * Joue un coup pour le joueur passé en argument à la colonne passée en argument
+ * @param joueur : Numéro du joueur
+ * @param col : Indice de la colonne
+ */
 void Puissance_4::jouerCoup (int joueur, int col) {
 
     col--;
@@ -87,6 +113,11 @@ void Puissance_4::jouerCoup (int joueur, int col) {
     }
 }
 
+/**
+ * Joue un coup pour l'IA en fonction de la difficulté passée en argument
+ * @param difficulte : Indice de difficulté
+ * @param joueur : Numéro du joueur
+ */
 void Puissance_4::ia_jouerCoup(int difficulte, int joueur){
     int col;
     switch (difficulte){
@@ -138,6 +169,16 @@ void Puissance_4::ia_jouerCoup(int difficulte, int joueur){
 
 }
 
+/**
+ * Algorithme Negamax avec élagage alpha-béta pour définir le meilleur coup pour l'IA
+ * @param grille : Grille actuelle
+ * @param meilleurCoup : Pointeur vers la variable meilleur coup
+ * @param profondeur : Nombre de tours à simuler
+ * @param alpha : Début de l'intervalle alpha-beta
+ * @param beta : Fin de l'intervalle alpha-beta
+ * @param joueur : Numéro du joueur qui simule le coup actuel
+ * @return int : Le meilleur score
+ */
 int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, int alpha, int beta, int joueur){
     int meilleurScore = - std::numeric_limits<int>::max();
     int joueurAdverse;
@@ -150,7 +191,7 @@ int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, in
     else {
         int score;
         int prochainMeilleurCoup;
-        std::array<int, 7> columns = {3, 4, 5, 0, 1, 2, 6};
+        std::array<int, 7> columns {{3, 4, 5, 0, 1, 2, 6}};
         std::random_shuffle(columns.begin(), columns.end());
 
 
@@ -182,13 +223,27 @@ int Puissance_4::negamax(int grille[7][6], int &meilleurCoup, int profondeur, in
     return meilleurScore;
 }
 
+/**
+ * Appel de la fonction negamax pour retourner le meilleur coup à jouer par l'IA
+ * @param grille : Grille actuelle (avant le début du Négamax)
+ * @param profondeur : Nombre de tours simulés (varie dans la fonction ia_jouerCoup)
+ * @param joueur : Numéro du joueur
+ * @return int : l'indice de la meilleure colonne à jouer
+ */
 int Puissance_4::tourIA(int grille[7][6], int profondeur, int joueur) {
     meilleurCoup = 3;
-    int score = negamax(grille,meilleurCoup, profondeur, - std::numeric_limits<int>::max() , std::numeric_limits<int>::max(), joueur);
+    negamax(grille,meilleurCoup, profondeur, - std::numeric_limits<int>::max() , std::numeric_limits<int>::max(), joueur);
     std::cout << meilleurCoup << "\n";
     return meilleurCoup;
 }
 
+/**
+ * Fonction d'évaluation pour l'algorithme négamax
+ * @param grille : Grille actuelle
+ * @param joueur : Joueur qui simule le coup
+ * @param joueurAdverse : joueur adverse
+ * @return Le score de la grille évaluée
+ */
 int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
     if (gameResult(grille) == joueur)
         return 10000 - totalCoups;
@@ -421,6 +476,11 @@ int Puissance_4::eval(int grille[7][6], int joueur, int joueurAdverse) {
     }
 }
 
+/**
+ * Teste le résultat de la grille : (0 : Partie pas terminée, 3 : match nul, numéro du joueur s'il y a un vainqueur)
+ * @param grille
+ * @return int : le resultat de la grille
+ */
 int Puissance_4::gameResult(int grille[7][6]){
     int cpt = 0, tmp = 0;
     for (int i = 0; i < 7; i++) {

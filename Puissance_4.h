@@ -1,7 +1,3 @@
-//
-// Created by Florian Blot on 09/12/2017.
-//
-
 #ifndef PUISSANCE_4_IA_PUISSANCE_4_H
 #define PUISSANCE_4_IA_PUISSANCE_4_H
 
@@ -21,7 +17,7 @@ private:
     int meilleurCoup;
 
 public:
-    int totalCoups = 0;
+    int totalCoups;
     Puissance_4 (int numPlayers = 2);
     void reset ();
     int getEtatCase (int col, int row);

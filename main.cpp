@@ -1,7 +1,3 @@
-//
-// Created by Florian Blot on 09/12/2017.
-//
-
 #include <iostream>
 #include "Commandes.h"
 

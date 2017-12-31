@@ -1,7 +1,3 @@
-//
-// Created by Florian Blot on 09/12/2017.
-//
-
 #ifndef PUISSANCE_4_IA_COMMANDES_H
 #define PUISSANCE_4_IA_COMMANDES_H
 
